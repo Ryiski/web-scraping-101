@@ -37,6 +37,7 @@ document.querySelector('button')
         }
     });
 
+    
 const removePreview = async (e) => {
 
     let li = e.parentElement;
