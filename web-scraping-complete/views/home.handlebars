@@ -1,0 +1,26 @@
+<div id="container">
+<div class="from">
+    <input type="url" placeholder="https://www.example.com" required>
+    <button type="submit">Add</button>
+</div>
+<ul class="preview-list">
+    {{#each data}}
+    <li class="preview-container" data-id="{{this.id}}">
+        <svg class="delete-button" viewBox="0 0 24 24" onClick="removePreview(this)">
+            <polygon
+                points="17.8,16.7 16.6,17.9 12,13.3 7.4,17.9 6.2,16.7 10.8,12.1 6.2,7.5 7.4,6.3 12,11 16.6,6.4 17.8,7.6 13.2,12.2">
+            </polygon>
+        </svg>
+        <a href="{{this.url}}" target="_blank">
+            <img class="preview-image" src="{{this.img}}" alt="preview image"
+                onError="imgError(this)" />
+            <div class="preview-info">
+                <h5 class="preview-title">{{this.title}}</h5>
+                <p class="preview-description">{{this.description}}</p>
+                <span class="preview-url">{{this.domain}}</span>
+            </div>
+        </a>
+    </li>
+    {{/each}}
+    </ul>
+    </div>
