@@ -1,99 +1,87 @@
-let closeButton = document.querySelectorAll('.delete-button');
-
 document.querySelector('button')
-    .addEventListener('click', async (e) => {
-        e.preventDefault();
+.addEventListener('click', async (e) => {
+    e.preventDefault();
 
-        closeButton = document.querySelector('.close');
+    try {
 
-        try {
+        let url = document.querySelector('input');
 
-            let url = document.querySelector('input');
+        const id = await uuid();
 
-            const id = await uuid();
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({ previewUrl: url.value , id })
+        };
 
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify({ previewUrl: url.value , id })
-            };
+        url.value = '';
 
-            url.value = '';
+        prependLoadingPreview(id);
 
-            previewMarkUp(id);
+        const data = await fetch('/get-preview', options).then(res => res.json());
 
-            const response = await fetch('/get-preview', options);
+        addDataToPreview(data);
 
-            const data = await response.json();
+    } catch (err) {
 
-            previewMarkUp(data);
+        console.log(err);
 
-        } catch (err) {
+    }
+});
 
-            console.log(err);
 
-        }
-    });
 
 const removePreview = async (e) => {
-
+try{
     let li = e.parentElement;
     li.parentElement.removeChild(li);
 
     const id = li.getAttribute('data-id');
     await fetch(`/remove/${id}`, { method: 'POST' });
+}catch(err){
+    console.log(err)
+}
+    
 
 }
 
-
-function previewMarkUp(data) {
-
-    if(typeof data === "object"){
-
-        const {
-            id,
-            url,
-            img,
-            title,
-            description,
-            domain
-        } = data;
-
-        const li = document.querySelector(`li[data-id="${id}"]`);
-  
-        li.classList.remove('loading');
-
-        li.prepend(
-            document.createRange()
-            .createContextualFragment(
-                `<svg class="delete-button" viewBox="0 0 24 24" onClick="removePreview(this)">
-                    <polygon points="17.8,16.7 16.6,17.9 12,13.3 7.4,17.9 6.2,16.7 10.8,12.1 6.2,7.5 7.4,6.3 12,11 16.6,6.4 17.8,7.6 13.2,12.2">
-                    </polygon>
-                </svg>
-                <a href="${url}" target="_blank">
-                    <img class="preview-image" src="${img}" alt="preview image"/>
-                    <div class="preview-info">
-                        <h5 class="preview-title">${title}</h5>
-                        <p class="preview-description">${description}</p>
-                        <span class="preview-url">${domain}</span>
-                    </div>
-                
-            </a>`
-            , 'text/html'));
-    }else{
-        
-        return document.querySelector(`ul`)
-        .prepend(
-            document
-            .createRange()
-            .createContextualFragment(
-                `<li class="preview-container loading" data-id="${data}"></li>`
-            , 'text/html'));
-    }
+function prependLoadingPreview(id) {   
+    document.querySelector(`ul`)
+    .prepend(
+        document
+        .createRange()
+        .createContextualFragment(
+            `<li class="preview-container loading" data-id="${id}"></li>`
+        , 'text/html')
+    );
+    
 }
 
+function addDataToPreview({ id, url, img, title, description, domain }) {
+
+    const li = document.querySelector(`li[data-id="${id}"]`);
+
+    li.classList.remove('loading');
+
+    li.innerHTML =
+        `<svg class="delete-button" viewBox="0 0 24 24" onClick="removePreview(this)">
+            <polygon points="17.8,16.7 16.6,17.9 12,13.3 7.4,17.9 6.2,16.7 10.8,12.1 6.2,7.5 7.4,6.3 12,11 16.6,6.4 17.8,7.6 13.2,12.2">
+            </polygon>
+        </svg>
+        <a href="${url}" target="_blank">
+            <img class="preview-image" src="${img}" alt="preview image" onError="imgError(this)"/>
+            <div class="preview-info">
+                <h5 class="preview-title">${title}</h5>
+                <p class="preview-description">${description}</p>
+                <span class="preview-url">${domain}</span>
+            </div>
+        </a>`;
+}
+
+
+//generates a unique id
 function uuid(){
     let date = new Date().getTime();
     const id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
