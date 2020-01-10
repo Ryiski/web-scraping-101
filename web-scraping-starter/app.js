@@ -1,11 +1,12 @@
 const express = require('express');
 const path = require('path');
 const exphbs  = require('express-handlebars');
-const data = require('./data.js');
+
 const fetch = require('node-fetch');
 const cheerio = require('cheerio')
 const fs = require('fs');
 const url = require('url');
+const data = require('./data.json');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,7 +20,6 @@ app.set('view engine', 'handlebars');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 
 

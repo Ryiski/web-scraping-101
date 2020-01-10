@@ -14,5 +14,21 @@
     "title": "Quest for a practical NodeJS API Framework",
     "img": "https://res.cloudinary.com/practicaldev/image/fetch/s--5x-tLuZ1--/c_imagga_scale,f_auto,fl_progressive,h_500,q_auto,w_1000/https://res.cloudinary.com/practicaldev/image/fetch/s--5oEnhlOm--/c_imagga_scale%2Cf_auto%2Cfl_progressive%2Ch_420%2Cq_auto%2Cw_1000/https://thepracticaldev.s3.amazonaws.com/i/881f55ajahrbodsw5r2z.jpg",
     "description": "While working on REST APIs with Express JS / Node, I came across some common challenges:Working with Express for the last 3 years, I started thinking about how to use ES6 classes and OOP to implement REST control..."
+  },
+  {
+    "id": "9900371e-a553-440b-89a7-fa7851e9c495",
+    "url": "https://dev.to/addyosmani/adaptive-loading-improving-web-performance-on-low-end-devices-1m69",
+    "domain": "dev.to",
+    "title": "Adaptive Loading - Improving Web Performance on low-end devices",
+    "img": "https://res.cloudinary.com/practicaldev/image/fetch/s--kkwb8J9L--/c_imagga_scale,f_auto,fl_progressive,h_500,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/k4d718bv7a9p1bnp6daq.png",
+    "description": "Adaptive Loading is a pattern for delivering a fast core experience to all users (including low-end devices) where you progressively add high-end-only features, if a user's network and hardware can handle it"
+  },
+  {
+    "id": "9fd01b0a-f0bc-48e8-97b9-c95bd6888122",
+    "url": "https://dev.to/juancarlospaco/faster-than-requests-with-multithread-web-scrapper-4lpi",
+    "domain": "dev.to",
+    "title": "Faster Than Requests with MultiThread Web Scraper",
+    "img": "https://res.cloudinary.com/practicaldev/image/fetch/s--6JtiXR4G--/c_imagga_scale,f_auto,fl_progressive,h_500,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/h1lwwbwl1h4vul7si8h0.jpg",
+    "description": "Faster Than Requests v0.9 with Multi-Thread Web Scraper Built-in"
   }
 ]

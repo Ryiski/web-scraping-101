@@ -24,77 +24,73 @@ app.get('/', function(req, res) {
   res.render('home.handlebars', { data });
 });
 
+/*Post meta data*/
 app.post('/get-preview',async (req, res) => {
 
   const { previewUrl, id } = req.body;
   
-  try{
+  const resp = await fetch(previewUrl);
+  const html = await resp.text();
+  const $ = cheerio.load(html);
 
-    const resp = await fetch(previewUrl);
-    const html = await resp.text();
-    const $ = cheerio.load(html);
+  const getMetaTag = (name) =>  {
+    return(
+      $(`meta[name=${name}]`).attr('content') ||  
+      $(`meta[name="og:${name}"]`).attr('content') ||  
+      $(`meta[name="twitter:${name}"]`).attr('content') ||
+      $(`meta[property=${name}]`).attr('content') ||  
+      $(`meta[property="og:${name}"]`).attr('content') ||  
+      $(`meta[property="twitter:${name}"]`).attr('content')
+    )
+  }
 
-    const getMetatag = (name) =>  {
-      return(
-        $(`meta[name=${name}]`).attr('content') ||  
-        $(`meta[name="og:${name}"]`).attr('content') ||  
-        $(`meta[name="twitter:${name}"]`).attr('content')
-      )
-    }
+  const metaTagData = {
+    id:id,
+    url: previewUrl,
+    domain: url.parse(previewUrl).hostname,
+    title: getMetaTag('title') || $(`h1`).text(),
+    img: getMetaTag('image') || './images/no-image.png',
+    description: getMetaTag('description') || $(`p`).text() || 'No description available',
+  }
 
-    const metaTags = {
-      id,
-      url: previewUrl,
-      domain: url.parse(previewUrl).hostname,
-      title: getMetatag('title') || $(`h1`).text(),
-      img: getMetatag('image') || './images/no-image.png',
-      description: getMetatag('description') || $(`p`).text() || 'No description available',
-    }
+  let { description } = metaTagData;
 
-    let { description } = metaTags;
+  // avoiding description to be more then 200 chars
+  if(description.length > 200){
+    metaTagData.description = description.substring(0,200) + '...';
+  }
 
-    // avoiding description to be more then 200 chars
-    if(description.length > 200){
-      metaTags.description = description.substring(0,200) + '...';
-    }
+  // add to start of array
+  data.unshift(metaTagData);
 
-    // add to start of array
-    data.unshift(metaTags);
-
-    // rewrite new data array to data.json
-    fs.writeFileSync("./data.json", JSON.stringify(data, null, 2));
+  // rewrite new data array to data.json
+  fs.writeFile("./data.json", JSON.stringify(data, null, 2),()=>{
     
     // respond back with the new added data
     res.status(201).json(data.shift());
-    
 
-  }catch(err){
-
-    console.log(err);
-    res.status(400).end();
-    
-  }
+  });
 });
+
 
 app.post('/remove/:id', (req, res) => {
 
-  const id = req.params.id;
+  const { id } = req.params.id;
 
-  // array of ids from data.json
-  const dataIds = data.map(d => d.id);
+  // index of the data to remove from data.json
+  const indexOfId = data.map(dataId => dataId.id)
+    .indexOf(id);
 
-  // index of the data in the data.json array
-  const index = dataIds.indexOf(id);
-
-  // remove data from list
-  data.splice(index,1);
+  // remove the data from list
+  data.splice(indexOfId,1);
 
   // rewrite new data array to data.json
-  fs.writeFileSync("./data.json", JSON.stringify(data, null, 2));
+  fs.writeFile("./data.json", JSON.stringify(data, null, 2), () => (
+    
+    res.status(200).end()
 
-  res.status(200).end();
-})
-
+  ));
+});
 
 
 

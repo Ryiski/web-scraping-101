@@ -1,26 +1,28 @@
-document.querySelector('button')
-.addEventListener('click', async (e) => {
+const addButton = document.querySelector('button');
+
+addButton.addEventListener('click', async (e) => {
     e.preventDefault();
 
     try {
 
-        let url = document.querySelector('input');
+        let urlInput = document.querySelector('input');
+        console.log(`Output => : urlInput`, urlInput.value);
 
         const id = await uuid();
 
-        const options = {
+        const fetchData = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify({ previewUrl: url.value , id })
+            body: JSON.stringify({ previewUrl: urlInput.value , id })
         };
 
-        url.value = '';
+        urlInput.value = '';
 
         prependLoadingPreview(id);
 
-        const data = await fetch('/get-preview', options).then(res => res.json());
+        const data = await fetch('/get-preview', fetchData).then(res => res.json());
 
         addDataToPreview(data);
 

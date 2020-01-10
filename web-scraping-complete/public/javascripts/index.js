@@ -1,26 +1,27 @@
-document.querySelector('button')
-.addEventListener('click', async (e) => {
+const addButton = document.querySelector('button');
+
+addButton.addEventListener('click', async (e) => {
     e.preventDefault();
 
     try {
 
-        let url = document.querySelector('input');
+        let urlInput = document.querySelector('input');
 
         const id = await uuid();
 
-        const options = {
+        const fetchData = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify({ previewUrl: url.value , id })
+            body: JSON.stringify({ previewUrl: urlInput.value , id })
         };
 
-        url.value = '';
+        urlInput.value = '';
 
         prependLoadingPreview(id);
 
-        const data = await fetch('/get-preview', options).then(res => res.json());
+        const data = await fetch('/get-preview', fetchData).then(res => res.json());
 
         addDataToPreview(data);
 
@@ -34,17 +35,19 @@ document.querySelector('button')
 
 
 const removePreview = async (e) => {
-try{
-    let li = e.parentElement;
-    li.parentElement.removeChild(li);
+    try{
 
-    const id = li.getAttribute('data-id');
-    await fetch(`/remove/${id}`, { method: 'POST' });
-}catch(err){
-    console.log(err)
-}
+        let li = e.parentElement;
+        li.parentElement.removeChild(li);
+
+        const id = li.getAttribute('data-id');
+        await fetch(`/remove/${id}`, { method: 'POST' });
     
+    }catch(err){
 
+        console.log(err);
+
+    }
 }
 
 function prependLoadingPreview(id) {   
@@ -80,17 +83,15 @@ function addDataToPreview({ id, url, img, title, description, domain }) {
         </a>`;
 }
 
-
 //generates a unique id
 function uuid(){
     let date = new Date().getTime();
-    const id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const randomStrings = (c) => {
         const r = (date + Math.random()*16)%16 | 0;
         date = Math.floor(date/16);
         return (c=='x' ? r :(r&0x3|0x8)).toString(16);
-    });
+    }
+    const id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, randomStrings);
 
     return id;
 }
-
-
